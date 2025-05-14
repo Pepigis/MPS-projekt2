@@ -1,0 +1,168 @@
+#include <WiFi.h>
+#include <WebServer.h>
+#include <EEPROM.h>
+
+const char* ssid = "xxxx";
+const char* password = "xxxx";
+
+WebServer server(80);
+
+// Base64 zakódovaný obrázek (ukázkový Base64 řetězec, nahradíš vlastním)
+const char* base64Image = "iVBORw0KGgoAAAANSUhEUgAAAAUA..."; // Sem vlož svůj Base64 kód obrázku
+
+// Struktura pro statistiky
+struct Stats {
+  int totalOpened;
+  int milspec;
+  int restricted;
+  int classified;
+  int covert;
+  int gold;
+  int stattrakMilspec;
+  int stattrakRestricted;
+  int stattrakClassified;
+  int stattrakCovert;
+  int stattrakGold;
+} stats = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+#define EEPROM_SIZE 64
+#define EEPROM_ADDR 0
+
+// Funkce pro načtení statistik z EEPROM
+void loadStats() {
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.get(EEPROM_ADDR, stats);
+  EEPROM.end();
+}
+
+// Funkce pro uložení statistik do EEPROM
+void saveStats() {
+  EEPROM.begin(EEPROM_SIZE);
+  EEPROM.put(EEPROM_ADDR, stats);
+  EEPROM.commit();
+  EEPROM.end();
+}
+
+// Funkce pro simulaci dropu z case
+String simulateDrop() {
+  float r = random(0, 10000) / 100.0;  // 0.00–100.00 %
+  bool isStatTrak = false;
+
+  stats.totalOpened++;
+
+  String result;
+  if (r < 0.26) {
+    stats.gold++;
+    result = "🟨 Gold (Knife/Gloves)";
+    isStatTrak = (random(0, 10000) / 100.0) < 1.6;  // 1.6 % šance na StatTrak pro Gold
+    if (isStatTrak) stats.stattrakGold++;
+  } else if (r < 0.90) {
+    stats.covert++;
+    result = "🟥 Covert";
+    isStatTrak = (random(0, 10000) / 100.0) < 10.0;  // 10 % šance na StatTrak
+    if (isStatTrak) stats.stattrakCovert++;
+  } else if (r < 3.10) {
+    stats.classified++;
+    result = "🟫 Classified";
+    isStatTrak = (random(0, 10000) / 100.0) < 10.0;
+    if (isStatTrak) stats.stattrakClassified++;
+  } else if (r < 15.08) {
+    stats.restricted++;
+    result = "🟪 Restricted";
+    isStatTrak = (random(0, 10000) / 100.0) < 10.0;
+    if (isStatTrak) stats.stattrakRestricted++;
+  } else {
+    stats.milspec++;
+    result = "🔵 Mil-Spec";
+    isStatTrak = (random(0, 10000) / 100.0) < 10.0;
+    if (isStatTrak) stats.stattrakMilspec++;
+  }
+
+  if (isStatTrak) {
+    result = "🌟 StatTrak™ " + result;
+  }
+
+  saveStats();
+  return result;
+}
+
+// Funkce pro generování HTML stránky
+String getHTML(String result) {
+  String html = "<!DOCTYPE html><html><head><meta charset='utf-8'><title>CS:GO Case Simulator</title>";
+  html += "<style>";
+  html += "body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #1e3c72, #2a5298); color: #fff; margin: 0; padding: 20px; min-height: 100vh; display: flex; justify-content: center; align-items: center; }";
+  html += ".container { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 15px; padding: 30px; max-width: 600px; width: 100%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); }";
+  html += "h1 { text-align: center; font-size: 2.5em; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); }";
+  html += "h2 { text-align: center; color: #ffd700; font-size: 1.8em; margin: 15px 0; }";
+  html += "h3 { font-size: 1.5em; margin-top: 20px; color: #e0e0e0; }";
+  html += "button { display: block; margin: 0 auto; padding: 15px 30px; font-size: 1.2em; color: #fff; background: linear-gradient(45deg, #ff416c, #ff4b2b); border: none; border-radius: 25px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(255, 75, 43, 0.5); }";
+  html += "button:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 75, 43, 0.7); }";
+  html += "p { font-size: 1.2em; margin: 10px 0; text-align: center; }";
+  html += "ul { list-style: none; padding: 0; font-size: 1.1em; }";
+  html += "li { padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }";
+  html += "canvas { display: block; margin: 20px auto; border-radius: 10px; background: rgba(255, 255, 255, 0.9); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }";
+  html += "</style>";
+  html += "</head>";
+  html += "<body><div class='container'>";
+  html += "<h1>🎲 CS:GO Case Simulator</h1>";
+  html += "<form action='/open'><button type='submit'>Otevřít case</button></form>";
+
+  if (result != "") {
+    html += "<h2>Výsledek: " + result + "</h2>";
+  }
+
+  html += "<p>📦 Otevřeno: " + String(stats.totalOpened) + "</p>";
+  html += "<h3>Statistiky:</h3><ul>";
+  html += "<li>🔵 Mil-Spec: " + String(stats.milspec) + " (StatTrak: " + String(stats.stattrakMilspec) + ")</li>";
+  html += "<li>🟪 Restricted: " + String(stats.restricted) + " (StatTrak: " + String(stats.stattrakRestricted) + ")</li>";
+  html += "<li>🟫 Classified: " + String(stats.classified) + " (StatTrak: " + String(stats.stattrakClassified) + ")</li>";
+  html += "<li>🟥 Covert: " + String(stats.covert) + " (StatTrak: " + String(stats.stattrakCovert) + ")</li>";
+  html += "<li>🟨 Gold: " + String(stats.gold) + " (StatTrak: " + String(stats.stattrakGold) + ")</li>";
+  html += "</ul>";
+
+  html += "<h3>Obrázek:</h3><img src='/image' width='200' height='200' />";
+  html += "</div></body></html>";
+  return html;
+}
+
+// Funkce pro root stránku
+void handleRoot() {
+  server.send(200, "text/html", getHTML(""));
+}
+
+// Funkce pro otevření case
+void handleOpen() {
+  String result = simulateDrop();
+  server.send(200, "text/html", getHTML(result));
+}
+
+// Funkce pro posílání Base64 obrázku
+void handleImage() {
+  server.send(200, "image/png", base64Image);
+}
+
+void setup() {
+  Serial.begin(115200);
+  
+  WiFi.begin(ssid, password);
+  Serial.println("Připojuji se k WiFi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  
+  Serial.println("Připojeno!");
+  Serial.println(WiFi.localIP());
+
+  loadStats();
+
+  server.on("/", handleRoot);
+  server.on("/open", handleOpen);
+  server.on("/image", handleImage);
+
+  server.begin();
+}
+
+void loop() {
+  server.handleClient();
+}
