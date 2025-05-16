@@ -12,17 +12,17 @@ ročníkový projekt - 2. pololetí
     Vzdělávání uživatelů o tom, jak rozpoznat podezřelé stránky (např. špatná gramatika, neobvyklé chování stránky).
 
 # Citace
-  # Obrázky:
-    Vlastní logo: looka. Dostupné z: https://looka.com/logo-maker/
-  # Dokumentace
-    Arduino Reference. WiFi Library. Dostupné z: https://www.arduino.cc/reference/en/libraries/wifi/.
-    WebServer Library Documentation. ESP32 WebServer. Dostupné z: https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer.
-  # Designová inspirace
-    Steam. Steam Login Page. Dostupné z: https://store.steampowered.com/login/.
+  Obrázky:
+    *Vlastní logo: looka. Dostupné z: https://looka.com/logo-maker/
+   Dokumentace
+    *Arduino Reference. WiFi Library. Dostupné z: https://www.arduino.cc/reference/en/libraries/wifi/.
+    *WebServer Library Documentation. ESP32 WebServer. Dostupné z: https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer.
+   Designová inspirace
+    *Steam. Steam Login Page. Dostupné z: https://store.steampowered.com/login/.
 # Poděkování
-  Grok (xAI): Za poskytnutí odborné podpory při tvorbě kódu, řešení technických problémů.
-  Arduino a Raspberry Pi komunita: Za dokumentaci a knihovny, které usnadnily vývoj na Raspberry Pi Pico W.
-  Mému učiteli: Za 
+    Grok (xAI): Za poskytnutí odborné podpory při tvorbě kódu, řešení technických problémů.
+    Arduino a Raspberry Pi komunita: Za dokumentaci a knihovny, které usnadnily vývoj na Raspberry Pi Pico W.
+    Mému učiteli: Za 
 
 # Licenční aspekty
   # Design inspirovaný steamem
