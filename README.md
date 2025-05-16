@@ -28,7 +28,7 @@ ročníkový projekt - 2. pololetí
 # Licenční aspekty
   #
     Design inspirovaný steamem
-      *Design přihlašovací stránky je silně inspirován vzhledem oficiální přihlašovací stránky Steamu (barvy, rozložení, styl). I když kód byl vytvořen samostatně, napodobování designu může být považováno za potenciální porušení práv duševního vlastnictví, pokud by projekt          byl komerčně využit nebo veřejně dostupný.
+      *Design přihlašovací stránky je silně inspirován vzhledem oficiální přihlašovací stránky Steamu (barvy, rozložení, styl). I když kód byl vytvořen samostatně, napodobování designu může být považováno za potenciální porušení práv duševního vlastnictví, pokud by projekt byl komerčně využit nebo veřejně dostupný.
      Open-source knihovny v Arduino kódu
       *Arduino kód využívá knihovny WiFi a WebServer, které jsou open-source a obvykle licencovány pod MIT licencí. Tato licence vyžaduje uvedení zdroje a zachování licenčních informací při distribuci kódu.
 # Závěr Projektu 
