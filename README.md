@@ -26,8 +26,9 @@ ročníkový projekt - 2. pololetí
   #
     Grok (xAI): Za poskytnutí odborné podpory při tvorbě kódu, řešení technických problémů.
     Arduino a Raspberry Pi komunita: Za dokumentaci a knihovny, které usnadnily vývoj na Raspberry Pi Pico W.
-    Mému učiteli: Za 
+    Mé učitelce: Za trpělivé vysvětlení základů HTML, CSS a JavaScriptu, které mi umožnily vytvořit tento projekt.
 
+    
 # Licenční aspekty
   **Design inspirovaný steamem**
   
